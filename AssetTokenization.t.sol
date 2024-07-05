@@ -89,73 +89,11 @@ contract AssetTokenizationTest is Test {
         vm.stopPrank();
     }
 
-    function test_mintedTokens() public {
+    function test_toCheckUSDT() public {
         vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
         setUp();
-        uint256 temp = assetTokenization.mintedTokens(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c, 10000);
-        assertEq(temp, 10000);
+        uint256 temp = assetTokenization.toCheckUsdt(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c, 10);
+        assertEq(temp, 10);
         vm.stopPrank();
     }
-    /// @dev testcase for checking the investment made by the investors.
-    // function test_investInProperty() public {
-    //     vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
-    //     setUp();
-    //     assetTokenization.listProperty(msg.sender, 50000, 20000, 24000);
-    //     uint256 temp = assetTokenization.investInProperty(1, 0x04c1A796D9049ce70c2B4A188Ae441c4c619983c, 10);
-    //     // uint256 temp = assetTokenization.toCheckUsdt(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
-    //     assertEq(temp, 10);
-    //     vm.stopPrank();
-    // }
-
-    // /// @dev testcase for checking the balance od USDT tokens in the account of token holder
-    // function test_toCheckUsdt() public {
-    //     vm.startPrank(0xcF5D3555140A75E9b9a1ED56D1dB9E95064BA4D5);
-    //     setUp();
-    //     usdtMock.transfer(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c, 2000);
-    //     // address tempAdd = address(usdtMock);
-    //     uint256 temp = assetTokenization.toCheckUsdt(0xcF5D3555140A75E9b9a1ED56D1dB9E95064BA4D5, 0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
-    //     assertEq(temp, 2000);
-    //     vm.stopPrank();
-    // }
-
-    /// @dev testcase to test the investments done by the investor.
-    // function test_investInProperty() public {
-    //     vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
-    //     setUp();
-    //     test_listProperty();
-
-    //     vm.stopPrank();
-    // }
-
-    // function testFail_listProperty() public {
-    //     vm.startPrank(address(0));
-    //     setUp();
-    //     bool temp = assetTokenization.listProperty(
-    //         msg.sender,
-    //         50000,
-    //         20000,
-    //         24000
-    //     );
-
-    //     assertEq(temp, false);
-    //     vm.stopPrank();
-    // }
-
-    // function testFail_listProperty() public {
-    //     vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
-    //     setUp();
-    //     assetTokenization.listProperty(msg.sender, 0, 20000, 24000);
-    //     uint256 temp = assetTokentization.checkValueOfProperty(1);
-    //     vm.stopPrank();
-    // }
-
-    // function test_Increment() public {
-    //     counter.increment();
-    //     assertEq(counter.number(), 1);
-    // }
-
-    // function testFuzz_SetNumber(uint256 x) public {
-    //     counter.setNumber(x);
-    //     assertEq(counter.number(), x);
-    // }
 }
