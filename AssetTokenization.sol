@@ -5,6 +5,36 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // import "/home/webclues/Desktop/MyProjects/Subtask/subtask/src/UsdtMock.sol";
 
+/// @dev MockUsdt contract
+
+contract UsdtMock is ERC20 {
+    constructor() ERC20("MockUsdt", "USDT") {
+        // _mint(msg.sender, 10000000000 * (10 ** decimals()));
+    }
+
+    function mintToken(address to, uint256 value) public {
+        _mint(to, value);
+    }
+    function giveApproval(address _address, uint256 value) public {
+        approve(_address, value);
+    }
+
+    function checkApproval(
+        address owner,
+        address spender
+    ) public view returns (uint256) {
+        return (allowance(owner, spender));
+    }
+
+    function transferFunds(address to, uint256 value) public {
+        transfer(to, value);
+    }
+
+    function checkBalance(address owner) public view returns (uint256) {
+        return balanceOf(owner);
+    }
+}
+
 contract AssetTokenization is ERC20 {
     struct PropertyOwnerDetails {
         uint256 propertyId;
@@ -59,8 +89,10 @@ contract AssetTokenization is ERC20 {
     address InvestorsUSDTToken;
 
     UsdtMock public usdtMock;
-    constructor(address investorsUsdtToken) ERC20("MyPropertyToken", "MPK") {
-        InvestorsUSDTToken = investorsUsdtToken;
+
+    // UsdtMock public usdtMock;
+    constructor(address _usdtMock) ERC20("MyPropertyToken", "MPK") {
+        usdtMock = UsdtMock(_usdtMock);
     }
 
     /// @dev function for the owner to list his property.
@@ -175,8 +207,15 @@ contract AssetTokenization is ERC20 {
             _investorsAddress
         ] = _amountToInvest;
 
-        ERC20(InvestorsUSDTToken).transferFrom(
-            msg.sender,
+        // ERC20(usdtMock).mint(
+        //     msg.sender,
+        //     propertyDetailsMapping[_propertyId].propertyOwnerAddress,
+        //     _amountToInvest
+        // );
+
+        usdtMock.mintToken(_investorsAddress, _amountToInvest);
+        ERC20(usdtMock).transferFrom(
+            _investorsAddress,
             propertyDetailsMapping[_propertyId].propertyOwnerAddress,
             _amountToInvest
         );
@@ -282,9 +321,12 @@ contract AssetTokenization is ERC20 {
         return balanceOf(_ownerAddress);
     }
 
-    function toCheckUsdt(address owner) public view returns (uint256) {
+    function toCheckUsdt(address to, uint256 value) public returns (uint256) {
         // ERC20(InvestorsUSDTToken).transferFrom(spender, 0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf, 10);
         // return ERC20(InvestorsUSDTToken).balanceOf(spender);
-        return ERC20(InvestorsUSDTToken).balanceOf(owner);
+        // return ERC20(InvestorsUSDTToken).balanceOf(owner);
+
+        ERC20(usdtMock).mintToken(to, value);
+        return usdtMock.checkBalance(to);
     }
 }
