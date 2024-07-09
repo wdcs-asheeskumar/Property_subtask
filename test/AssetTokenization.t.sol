@@ -242,7 +242,7 @@ contract AssetTokenizationTest is Test {
     // <=========================================Negative Testcases=========================================>
 
     /// @dev negative testcase to test the listing of property by the owner.
-    function test_listProperty() public {
+    function testFail_listProperty() public {
         vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
         setUp();
         assetTokenization.listProperty(address(0), 50000, 20000, 24000);
