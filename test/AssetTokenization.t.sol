@@ -239,6 +239,33 @@ contract AssetTokenizationTest is Test {
         vm.stopPrank();
     }
 
+    function test_fetchInvestorData() public {
+        vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        assetTokenization.investInProperty(
+            1,
+            0x04c1A796D9049ce70c2B4A188Ae441c4c619983c,
+            100
+        );
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256 temp3
+        ) = assetTokenization.fetchInvestorData(
+                0x04c1A796D9049ce70c2B4A188Ae441c4c619983c
+            );
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 100);
+        assertEq(temp3, 1);
+        vm.stopPrank();
+    }
+
     // <=========================================Negative Testcases=========================================>
 
     /// @dev negative testcase to test the listing of property by the owner.
@@ -518,6 +545,31 @@ contract AssetTokenizationTest is Test {
         assetTokenization.deListingProperty(2);
         bool temp = assetTokenization.listedPropertyState(2);
         assertEq(temp, false);
+        vm.stopPrank();
+    }
+
+    function testFail_fetchInvestorData() public {
+        vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        assetTokenization.investInProperty(
+            1,
+            0x04c1A796D9049ce70c2B4A188Ae441c4c619983c,
+            100
+        );
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256 temp3
+        ) = assetTokenization.fetchInvestorData(address(0));
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 100);
+        assertEq(temp3, 1);
         vm.stopPrank();
     }
 }

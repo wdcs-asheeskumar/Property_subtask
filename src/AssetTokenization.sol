@@ -66,23 +66,33 @@ contract AssetTokenization is ERC20 {
         uint256 noOfInvestors;
     }
 
-    /// @dev keeping tract of all the property and there details.
+    /// @dev struct to store the data and investment record of the investor
+    struct InvestorsData {
+        uint256[] propertyId;
+        uint256[] amountInvested;
+        uint256 numberOfProperties;
+    }
+
+    /// @dev mapping for keeping tract of all the property and there details.
     mapping(uint256 => PropertyOwnerDetails) propertyDetailsMapping;
 
-    /// @dev keeping the list of number of owners of the property
+    /// @dev mapping for keeping the list of number of owners of the property
     mapping(address => uint256) public ownerPropertyList;
 
-    /// @dev keeping the record of listed properties
+    /// @dev mapping for keeping the record of listed properties
     mapping(uint256 => bool) public listedProperties;
 
-    /// @dev keeps record of the investor has invested in certain property or not.
+    /// @dev mapping to keep record of the investor has invested in certain property or not.
     mapping(uint256 => mapping(address => bool)) public investmentRecords;
 
-    /// @dev keeps record of the amount of investment done by the investor in a particular property.
+    /// @dev mapping to keep record of the amount of investment done by the investor in a particular property.
     mapping(uint256 => mapping(address => uint256)) investmentAmountRecords;
 
-    /// @dev keeps record of the time at which the investor has invested on a property
+    /// @dev mapping to keep record of the time at which the investor has invested on a property
     mapping(uint256 => mapping(address => uint256)) investmentTimeRecord;
+
+    /// @dev mapping to keep record  of the investor's investment data
+    mapping(address => InvestorsData) public investorsDataMapping;
 
     /// @dev time period at which the rent will be paid to the investor
     uint256 private timeFrame = 30 days;
@@ -234,6 +244,13 @@ contract AssetTokenization is ERC20 {
         investmentAmountRecords[_propertyId][
             _investorsAddress
         ] = _amountToInvest;
+
+        investorsDataMapping[_investorsAddress].propertyId.push(_propertyId);
+        investorsDataMapping[_investorsAddress].amountInvested.push(
+            _amountToInvest
+        );
+        uint256 len = investorsDataMapping[_investorsAddress].propertyId.length;
+        investorsDataMapping[_investorsAddress].numberOfProperties = len;
 
         usdtMock.mintToken(
             _investorsAddress,
@@ -411,5 +428,17 @@ contract AssetTokenization is ERC20 {
         require(_user != address(0), "Invalid address");
         // usdtMock.mintToken(_investor, _owner, 1000);
         return usdtMock.balanceOf(_user);
+    }
+
+    /// @dev function for fetch the investment record of any investor
+    function fetchInvestorData(
+        address _investorData
+    ) public view returns (uint256[] memory, uint256[] memory, uint256) {
+        require(_investorData != address(0), "Invalid address");
+        return (
+            investorsDataMapping[_investorData].propertyId,
+            investorsDataMapping[_investorData].amountInvested,
+            investorsDataMapping[_investorData].numberOfProperties
+        );
     }
 }
