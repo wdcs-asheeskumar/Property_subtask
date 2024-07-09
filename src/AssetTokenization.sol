@@ -74,7 +74,7 @@ contract AssetTokenization is ERC20 {
     }
 
     /// @dev mapping for keeping tract of all the property and there details.
-    mapping(uint256 => PropertyOwnerDetails) propertyDetailsMapping;
+    mapping(uint256 => PropertyOwnerDetails) public propertyDetailsMapping;
 
     /// @dev mapping for keeping the list of number of owners of the property
     mapping(address => uint256) public ownerPropertyList;
@@ -86,10 +86,10 @@ contract AssetTokenization is ERC20 {
     mapping(uint256 => mapping(address => bool)) public investmentRecords;
 
     /// @dev mapping to keep record of the amount of investment done by the investor in a particular property.
-    mapping(uint256 => mapping(address => uint256)) investmentAmountRecords;
+    mapping(uint256 => mapping(address => uint256)) public investmentAmountRecords;
 
     /// @dev mapping to keep record of the time at which the investor has invested on a property
-    mapping(uint256 => mapping(address => uint256)) investmentTimeRecord;
+    mapping(uint256 => mapping(address => uint256)) public investmentTimeRecord;
 
     /// @dev mapping to keep record  of the investor's investment data
     mapping(address => InvestorsData) public investorsDataMapping;
