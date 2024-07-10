@@ -81,6 +81,15 @@ contract AssetTokenization is ERC20 {
         uint256 numberOfProperties;
     }
 
+    /// @dev struct to store the data and properties record of the owner
+    struct OwnersData {
+        uint256[] propertyId;
+        uint256[] NftId;
+        uint256[] valueInvested;
+        uint256[] valueCurrentlyAvailable;
+        uint256 numberOfProperties;
+    }
+
     /// @dev mapping for keeping tract of all the property and there details.
     mapping(uint256 => PropertyOwnerDetails) public propertyDetailsMapping;
 
@@ -102,6 +111,9 @@ contract AssetTokenization is ERC20 {
 
     /// @dev mapping to keep record  of the investor's investment data
     mapping(address => InvestorsData) public investorsDataMapping;
+
+    /// @dev mapping to keep record  of the investor's investment data
+    mapping(address => OwnersData) public ownersDataMapping;
 
     /// @dev time period at which the rent will be paid to the investor
     uint256 private timeFrame = 30 days;
@@ -176,6 +188,16 @@ contract AssetTokenization is ERC20 {
         _mint(_ownerAddress, _valueOfProperty); /// @dev minting tokens equivalent to the value of property in owner's account.
         propertyNFT.safeMint(_ownerAddress, id); /// @dev minting NFT token in the user's account.
 
+        /// @dev storing data only for owner
+        ownersDataMapping[_ownerAddress].propertyId.push(id); /// @dev storing the id of the property
+        ownersDataMapping[_ownerAddress].NftId.push(id); /// @dev storing the id of the NFT
+        ownersDataMapping[_ownerAddress].valueInvested.push(0); /// @dev storing the value that has been invested
+        ownersDataMapping[_ownerAddress].valueCurrentlyAvailable.push(
+            _valueAvailableForInvestment
+        ); /// @dev storing the value currently available for investment
+        uint256 temp = ownersDataMapping[_ownerAddress].propertyId.length;
+        ownersDataMapping[_ownerAddress].numberOfProperties = temp; /// @dev storing the total number of properties
+
         /// @dev emiting the event ListProppertyInfo for emitting the information about the property.
         emit ListPropertyInfo(
             id,
@@ -238,9 +260,9 @@ contract AssetTokenization is ERC20 {
             propertyDetailsMapping[_propertyId].noOfInvestors +
             1;
 
-        propertyDetailsMapping[_propertyId].valueInvested =
-            propertyDetailsMapping[_propertyId].valueInvested +
+        uint256 valInv = propertyDetailsMapping[_propertyId].valueInvested +
             _amountToInvest;
+        propertyDetailsMapping[_propertyId].valueInvested = valInv;
 
         propertyDetailsMapping[_propertyId].valueCurrentlyAvailable =
             propertyDetailsMapping[_propertyId].valueAvailableForInvestment -
@@ -260,6 +282,16 @@ contract AssetTokenization is ERC20 {
         );
         uint256 len = investorsDataMapping[_investorsAddress].propertyId.length;
         investorsDataMapping[_investorsAddress].numberOfProperties = len;
+
+        ownersDataMapping[
+            propertyDetailsMapping[_propertyId].propertyOwnerAddress
+        ].valueInvested[_propertyId - 1] = valInv; /// @dev storing the value that has been invested
+
+        ownersDataMapping[
+            propertyDetailsMapping[_propertyId].propertyOwnerAddress
+        ].valueCurrentlyAvailable[_propertyId - 1] = propertyDetailsMapping[
+            _propertyId
+        ].valueCurrentlyAvailable;
 
         usdtMock.mintToken(
             _investorsAddress,
@@ -452,6 +484,32 @@ contract AssetTokenization is ERC20 {
         );
     }
 
+    /// @dev function for fetch the property record of any owner
+    function fetchOwnerData(
+        address _ownerAddress
+    )
+        public
+        view
+        returns (
+            uint256[] memory,
+            uint256[] memory,
+            uint256[] memory,
+            uint256[] memory,
+            uint256
+        )
+    {
+        // require(
+        //     _ownerAddress == msg.sender,
+        //     "Only owner can fetch the details of his/her property"
+        // );
+        return (
+            ownersDataMapping[_ownerAddress].propertyId,
+            ownersDataMapping[_ownerAddress].NftId,
+            ownersDataMapping[_ownerAddress].valueInvested,
+            ownersDataMapping[_ownerAddress].valueCurrentlyAvailable,
+            ownersDataMapping[_ownerAddress].numberOfProperties
+        );
+    }
     /// @dev function to check the owner of the NFT
     function checkNFTOwner(uint256 _tokenId) public view returns (address) {
         return propertyNFT.checkOwner(_tokenId);

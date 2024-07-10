@@ -283,6 +283,68 @@ contract AssetTokenizationTest is Test {
         vm.stopPrank();
     }
 
+    /// @dev testcases for checking fetchOwnerData function
+    function test_fetchOwnerData() public {
+        vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256[] memory temp3,
+            uint256[] memory temp4,
+            uint256 temp5
+        ) = assetTokenization.fetchOwnerData(
+                0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf
+            );
+
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 1);
+        assertEq(temp3[0], 0);
+        assertEq(temp4[0], 20000);
+        assertEq(temp5, 1);
+    }
+
+    /// @dev testcases for checking fetchOwnerData function after investment
+    function test_fetchOwnerDataAfterInvestment() public {
+        vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        assetTokenization.investInProperty(
+            1,
+            0x04c1A796D9049ce70c2B4A188Ae441c4c619983c,
+            100
+        );
+        vm.stopPrank();
+        vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256[] memory temp3,
+            uint256[] memory temp4,
+            uint256 temp5
+        ) = assetTokenization.fetchOwnerData(
+                0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf
+            );
+
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 1);
+        assertEq(temp3[0], 100);
+        assertEq(temp4[0], 19900);
+        assertEq(temp5, 1);
+        vm.stopPrank();
+    }
+
     // <=========================================Negative Testcases=========================================>
 
     /// @dev negative testcase to test the listing of property by the owner.
@@ -589,6 +651,68 @@ contract AssetTokenizationTest is Test {
         assertEq(temp1[0], 1);
         assertEq(temp2[0], 100);
         assertEq(temp3, 1);
+        vm.stopPrank();
+    }
+
+    /// @dev negative testcases for checking fetchOwnerData function
+    function testFail_fetchOwnerData() public {
+        vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256[] memory temp3,
+            uint256[] memory temp4,
+            uint256 temp5
+        ) = assetTokenization.fetchOwnerData(
+                0x04c1A796D9049ce70c2B4A188Ae441c4c619983c
+            );
+
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 1);
+        assertEq(temp3[0], 0);
+        assertEq(temp4[0], 20000);
+        assertEq(temp5, 1);
+    }
+
+    /// @dev negative testcases for checking fetchOwnerData function after investment
+    function testFail_fetchOwnerDataAfterInvestment() public {
+        vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        assetTokenization.investInProperty(
+            1,
+            0x04c1A796D9049ce70c2B4A188Ae441c4c619983c,
+            100
+        );
+        vm.stopPrank();
+        vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
+        (
+            uint256[] memory temp1,
+            uint256[] memory temp2,
+            uint256[] memory temp3,
+            uint256[] memory temp4,
+            uint256 temp5
+        ) = assetTokenization.fetchOwnerData(
+                0x04c1A796D9049ce70c2B4A188Ae441c4c619983c
+            );
+
+        assertEq(temp1[0], 1);
+        assertEq(temp2[0], 1);
+        assertEq(temp3[0], 100);
+        assertEq(temp4[0], 19900);
+        assertEq(temp5, 1);
         vm.stopPrank();
     }
 }
