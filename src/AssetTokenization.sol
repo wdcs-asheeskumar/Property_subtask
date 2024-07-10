@@ -59,7 +59,6 @@ contract PropertyNFT is ERC721 {
 }
 
 /// @dev Asset tokenization contract
-
 contract AssetTokenization is ERC20 {
     /// @dev struct to store the data of property.
     struct PropertyOwnerDetails {
@@ -255,18 +254,20 @@ contract AssetTokenization is ERC20 {
             propertyDetailsMapping[_propertyId].valueCurrentlyAvailable > 0,
             "No more investment in this property possible"
         );
+        uint256 valInv = propertyDetailsMapping[_propertyId].valueInvested +
+            _amountToInvest;
+
+        uint256 valCurrentlyAvailable = propertyDetailsMapping[_propertyId]
+            .valueAvailableForInvestment - _amountToInvest;
 
         propertyDetailsMapping[_propertyId].noOfInvestors =
             propertyDetailsMapping[_propertyId].noOfInvestors +
             1;
 
-        uint256 valInv = propertyDetailsMapping[_propertyId].valueInvested +
-            _amountToInvest;
         propertyDetailsMapping[_propertyId].valueInvested = valInv;
 
-        propertyDetailsMapping[_propertyId].valueCurrentlyAvailable =
-            propertyDetailsMapping[_propertyId].valueAvailableForInvestment -
-            _amountToInvest;
+        propertyDetailsMapping[_propertyId]
+            .valueCurrentlyAvailable = valCurrentlyAvailable;
 
         investmentRecords[_propertyId][_investorsAddress] = true;
 
@@ -343,9 +344,13 @@ contract AssetTokenization is ERC20 {
         ];
 
         /// @dev calculating the monthly rent to be rewarded to the investor in that particular property.
-        uint256 _rentValue = (_investment *
-            propertyDetailsMapping[_propertyId].monthlyEarningFromInvestment) /
-            propertyDetailsMapping[_propertyId].valueAvailableForInvestment;
+        uint256 monthlyEarning = propertyDetailsMapping[_propertyId]
+            .monthlyEarningFromInvestment;
+        uint256 valAvailableForInvestment = propertyDetailsMapping[_propertyId]
+            .valueAvailableForInvestment;
+
+        uint256 _rentValue = (_investment * monthlyEarning) /
+            valAvailableForInvestment;
         // uint256 _rentValue = 100;
         // _approve(owner, spender, value);
         _approve(
