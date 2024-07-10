@@ -209,7 +209,9 @@ contract AssetTokenizationTest is Test {
         );
         assetTokenization.deListingProperty(1);
         bool temp = assetTokenization.listedPropertyState(1);
+        address tempNFT = assetTokenization.checkNFTOwner(1);
         assertEq(temp, false);
+        assertEq(tempNFT, address(0));
         vm.stopPrank();
     }
 
@@ -263,6 +265,21 @@ contract AssetTokenizationTest is Test {
         assertEq(temp1[0], 1);
         assertEq(temp2[0], 100);
         assertEq(temp3, 1);
+        vm.stopPrank();
+    }
+
+    /// @dev testcases to check the owner of NFT
+    function test_checkNFTOwner() public {
+        vm.startPrank(0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
+        setUp();
+        assetTokenization.listProperty(
+            0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf,
+            50000,
+            20000,
+            24000
+        );
+        address temp = assetTokenization.checkNFTOwner(1);
+        assertEq(temp, 0xD79a0889091D0c2a29A4Dc2f395a0108c69820Cf);
         vm.stopPrank();
     }
 
@@ -544,7 +561,9 @@ contract AssetTokenizationTest is Test {
         );
         assetTokenization.deListingProperty(2);
         bool temp = assetTokenization.listedPropertyState(2);
+        address tempNFT = assetTokenization.checkNFTOwner(1);
         assertEq(temp, false);
+        assertEq(tempNFT, address(0));
         vm.stopPrank();
     }
 

@@ -48,6 +48,14 @@ contract PropertyNFT is ERC721 {
     function safeMint(address to, uint256 tokenId) public {
         _safeMint(to, tokenId);
     }
+
+    function checkOwner(uint256 _tokenId) public view returns (address) {
+        return _ownerOf(_tokenId);
+    }
+
+    function burnNFT(uint256 _tokenId) public {
+        _burn(_tokenId);
+    }
 }
 
 /// @dev Asset tokenization contract
@@ -86,7 +94,8 @@ contract AssetTokenization is ERC20 {
     mapping(uint256 => mapping(address => bool)) public investmentRecords;
 
     /// @dev mapping to keep record of the amount of investment done by the investor in a particular property.
-    mapping(uint256 => mapping(address => uint256)) public investmentAmountRecords;
+    mapping(uint256 => mapping(address => uint256))
+        public investmentAmountRecords;
 
     /// @dev mapping to keep record of the time at which the investor has invested on a property
     mapping(uint256 => mapping(address => uint256)) public investmentTimeRecord;
@@ -165,7 +174,7 @@ contract AssetTokenization is ERC20 {
 
         listedProperties[id] = true;
         _mint(_ownerAddress, _valueOfProperty); /// @dev minting tokens equivalent to the value of property in owner's account.
-        propertyNFT.safeMint(_ownerAddress, 1); /// @dev minting NFT token in the user's account.
+        propertyNFT.safeMint(_ownerAddress, id); /// @dev minting NFT token in the user's account.
 
         /// @dev emiting the event ListProppertyInfo for emitting the information about the property.
         emit ListPropertyInfo(
@@ -369,6 +378,7 @@ contract AssetTokenization is ERC20 {
         );
 
         listedProperties[_id] = false;
+        propertyNFT.burnNFT(_id);
     }
 
     /// @dev function for checking value of the property
@@ -440,5 +450,10 @@ contract AssetTokenization is ERC20 {
             investorsDataMapping[_investorData].amountInvested,
             investorsDataMapping[_investorData].numberOfProperties
         );
+    }
+
+    /// @dev function to check the owner of the NFT
+    function checkNFTOwner(uint256 _tokenId) public view returns (address) {
+        return propertyNFT.checkOwner(_tokenId);
     }
 }
