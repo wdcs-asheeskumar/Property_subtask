@@ -503,10 +503,10 @@ contract AssetTokenization is ERC20 {
             uint256
         )
     {
-        // require(
-        //     _ownerAddress == msg.sender,
-        //     "Only owner can fetch the details of his/her property"
-        // );
+        require(
+            _ownerAddress == msg.sender,
+            "Only owner can fetch the details of his/her property"
+        );
         return (
             ownersDataMapping[_ownerAddress].propertyId,
             ownersDataMapping[_ownerAddress].NftId,
