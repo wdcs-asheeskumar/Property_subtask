@@ -40,7 +40,7 @@ contract AssetTokenizationTest is Test {
         vm.stopPrank();
     }
 
-    /// @dev negative testcase to check Investors to invest in property.
+    /// @dev testcase to check Investors to invest in property.
     function test_investInProperty() public {
         vm.startPrank(0x04c1A796D9049ce70c2B4A188Ae441c4c619983c);
         setUp();
