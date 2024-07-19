@@ -18,15 +18,26 @@ contract PropertyToken is ERC20 {
         _tokenName = _tokenName;
         _tokenSymbol = _tokenSymbol;
     }
-
+    
+    /// @dev function to mint property token
+    /// @param to address at which tokens have to be minted
+    /// @param amount amount of token that has to be minted
     function mint(address to, uint256 amount) public {
         _mint(to, amount);
     }
-
+    
+    /// @dev function to transfer property token from one address to another
+    /// @param from address from which the property tokens has to be send, sender address
+    /// @param to address to which the property tokens has to be minted, receiver address
+    /// @param value amount of property token that has to be transferred to the receiver 
     function transferToken(address from, address to, uint256 value) public {
         _transfer(from, to, value);
     }
-
+    
+    /// @dev function to give approval to other address to spend property tokens
+    /// @param owner the owner of the address who is owning the property token and giving approval
+    /// @param spender the address which is being approved to spend the property token
+    /// @param value amount of property token approval given from owner to spender to spend.
     function approveToken(
         address owner,
         address spender,
@@ -46,12 +57,18 @@ contract UsdtMock is ERC20 {
     constructor() ERC20("MockUsdt", "USDT") {}
 
     /// @dev function to mint token and transfer it from investor to owner
+    /// @param investor the address on which the mock USDT tokens have to be minted
+    /// @param owner owner address to whom the investor will transfer the mock USDT tokens
+    /// @param value the amount of mock USDT tokens that will be minted on investor's address and then transfered to the owner
     function mintToken(address investor, address owner, uint256 value) public {
         _mint(investor, value);
         _transfer(investor, owner, value);
     }
 
     /// @dev function to check the approval
+    /// @param owner the owner of the mock USDT token which has approved the spender with mock USDT token
+    /// @param spender the spender of the mock USDT token which has been approved by the owner of the token
+    /// @return uint256 the amount of allowance of spender
     function checkApproval(
         address owner,
         address spender
@@ -60,6 +77,9 @@ contract UsdtMock is ERC20 {
     }
 
     /// @dev function to transfer funds from investor to owner as well as from owner to investor
+    /// @param investor the address of the account who owns the mock USDT token
+    /// @param owner the address of the account to whom the mock USDT token will be trasnferred
+    /// @param value the amount of mock USDT token which will be transferred
     function transferFunds(
         address investor,
         address owner,
@@ -69,6 +89,8 @@ contract UsdtMock is ERC20 {
     }
 
     /// @dev function to check the USDT balance of the user.
+    /// @param owner the address of the account whose balance has to be fetched
+    /// @return uint256 balance of the account
     function checkBalance(address owner) public view returns (uint256) {
         return balanceOf(owner);
     }
@@ -84,16 +106,21 @@ contract PropertyNFT is ERC721 {
     constructor() ERC721("PropertyNFT", "PNFT") {}
 
     /// @dev function to mint NFT for the owner
+    /// @param to the address at which the NFT has to be minted
+    /// @param tokenId the tokenId of the NFT that has to be minted
     function safeMint(address to, uint256 tokenId) public {
         _safeMint(to, tokenId);
     }
 
     /// @dev function to check the owner of the NFT
+    /// @param _tokenId the token id of the NFT whose owner has to be checked
+    /// @return address of the owner of the NFT
     function checkOwner(uint256 _tokenId) public view returns (address) {
         return _ownerOf(_tokenId);
     }
 
     /// @dev function to burn NFT
+    /// @param _tokenId the token id of the NFT that has to be burned
     function burnNFT(uint256 _tokenId) public {
         _burn(_tokenId);
     }
@@ -262,6 +289,10 @@ contract AssetTokenization {
 
     /// @dev function to check the current status of the property.
     /// @param _idNumber provide the property id of the property whose details are needed
+    /// @return address of the owner of the property
+    /// @return uint256 of the total value of the property
+    /// @return uint256 of the total value currently available for the property
+    /// @return uint256 of the annual earning of the owner from the property
     function checkingProperty(
         uint256 _idNumber
     ) public view returns (address, uint256, uint256, uint256) {
@@ -350,6 +381,7 @@ contract AssetTokenization {
     /// @dev function for allocating monthly rent to the investors.
     /// @param _propertyId the property id of the property
     /// @param _investorAddress the address of the investor whose monthly rent has to be calculated and transfered.
+    /// @return uint256 the monthly rent that has to be transferred from the property owner to the investor
     function monthlyRent(
         uint256 _propertyId,
         address _investorAddress
@@ -447,6 +479,7 @@ contract AssetTokenization {
 
     /// @dev function for getting the state of properties, wether they are listed or not.
     /// @param _propertyId the property id of the property whose state has to be listed
+    /// @return true if the property is listed
     function listedPropertyState(
         uint256 _propertyId
     ) public view returns (bool) {
@@ -473,6 +506,7 @@ contract AssetTokenization {
 
     /// @dev function for checking value of the property
     /// @param _propertyId property id of the property whose total value has to be fetched
+    /// @return uint256 of value of property of property
     function checkValueOfProperty(
         uint256 _propertyId
     ) public view returns (uint256) {
@@ -485,6 +519,7 @@ contract AssetTokenization {
 
     /// @dev function for check the value of property available for investment.
     /// @param _propertyId property id of the property whose value available for investment is fetched
+    /// @return uint256 of the value available for the investment
     function checkValueAvailableForInvestment(
         uint256 _propertyId
     ) public view returns (uint256) {
@@ -499,6 +534,7 @@ contract AssetTokenization {
 
     /// @dev function for checking the current available value of property for investment.
     /// @param _propertyId property id of the property whose value currently available for investment is fetched
+    /// @return uint256 of the value currently available for the investment
     function checkvalueCurrentlyAvailable(
         uint256 _propertyId
     ) public view returns (uint256) {
@@ -511,6 +547,7 @@ contract AssetTokenization {
 
     /// @dev function to check annual earning from the property.
     /// @param _propertyId property id of the property whose annual income has to be fetched
+    /// @return uint256 of annual earning of the property owner from a particular property
     function checkannualEarning(
         uint256 _propertyId
     ) public view returns (uint256) {
@@ -523,6 +560,7 @@ contract AssetTokenization {
 
     /// @dev function for checking the balance.
     /// @param _user address of the account whose property token's balance has to be fetched
+    /// @return uint256 of the balance of ERC20 property token
     function checkBalance(address _user) public view returns (uint256) {
         require(_user != address(0), "Invalid address");
         return propertyToken.balanceOf(_user);
@@ -530,6 +568,7 @@ contract AssetTokenization {
 
     /// @dev function for checking the USDT balance.
     /// @param _user address of the account whose USDT token balance has to be fetched
+    /// @return uint256 of the balance of ERC20 mock USDT token
     function checkBalanceUsdt(address _user) public view returns (uint256) {
         require(_user != address(0), "Invalid address");
         return usdtMock.balanceOf(_user);
@@ -537,6 +576,9 @@ contract AssetTokenization {
 
     /// @dev function for fetch the investment record of any investor
     /// @param _investorData address of the investor whose data has to be fetched
+    /// @return uint256 of array of property id of all the properties invested by the investor
+    /// @return uint256 of array of amount invested in each property by the investor corresponding to their property id
+    /// @return uint256 of the total number of properties in which the investor has invested
     function fetchInvestorData(
         address _investorData
     ) public view returns (uint256[] memory, uint256[] memory, uint256) {
@@ -550,6 +592,9 @@ contract AssetTokenization {
 
     /// @dev function for fetch the property record of any owner
     /// @param _ownerAddress address of the owner whose data has to be fetched
+    /// @return uint256 of array of property id of each of the property owned by the owner
+    /// @return uint256 of array of NFT id of each of the property owned by the owner
+    /// @return uint256 of total number of properties owned by the owner
     function fetchOwnerData(
         address _ownerAddress
     ) public view returns (uint256[] memory, uint256[] memory, uint256) {
@@ -566,12 +611,15 @@ contract AssetTokenization {
 
     /// @dev function to check the owner of the NFT
     /// @param _tokenId token id of the NFT whose owner has to be checked
+    /// @return address of the owner of NFT
     function checkNFTOwner(uint256 _tokenId) public view returns (address) {
         return propertyNFT.checkOwner(_tokenId);
     }
 
     /// @dev function to check the owner property token name and symbol
     /// @param _tokenId token id of the property whose property token's name and symbol is to be fetched
+    /// @return string of the name of the ERC20 property token for the provided property id
+    /// @return string of the symbol of the ERC20 property token for the provided property id
     function checkPropertyTokenName(
         uint256 _tokenId
     ) public view returns (string memory, string memory) {
