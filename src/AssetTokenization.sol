@@ -18,22 +18,22 @@ contract PropertyToken is ERC20 {
         _tokenName = _tokenName;
         _tokenSymbol = _tokenSymbol;
     }
-    
+
     /// @dev function to mint property token
     /// @param to address at which tokens have to be minted
     /// @param amount amount of token that has to be minted
     function mint(address to, uint256 amount) public {
         _mint(to, amount);
     }
-    
+
     /// @dev function to transfer property token from one address to another
     /// @param from address from which the property tokens has to be send, sender address
     /// @param to address to which the property tokens has to be minted, receiver address
-    /// @param value amount of property token that has to be transferred to the receiver 
+    /// @param value amount of property token that has to be transferred to the receiver
     function transferToken(address from, address to, uint256 value) public {
         _transfer(from, to, value);
     }
-    
+
     /// @dev function to give approval to other address to spend property tokens
     /// @param owner the owner of the address who is owning the property token and giving approval
     /// @param spender the address which is being approved to spend the property token
@@ -453,7 +453,7 @@ contract AssetTokenization {
         );
         require(
             investmentRecords[_propertyId][_investorAddress] == true,
-            "Only the owner of the property can withdraw the funds"
+            "Only the investor of the property can withdraw the funds"
         );
         uint256 _transferAmount = investmentAmountRecords[_propertyId][
             _investorAddress
