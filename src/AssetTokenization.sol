@@ -173,36 +173,35 @@ contract AssetTokenization {
     }
 
     /// @dev mapping for keeping tract of all the property and there details.
-    mapping(uint256 => PropertyOwnerDetails) public propertyDetailsMapping;
+    mapping(uint256 => PropertyOwnerDetails) propertyDetailsMapping;
 
     /// @dev mapping for keeping the record of listed properties
-    mapping(uint256 => bool) public listedProperties;
+    mapping(uint256 => bool) listedProperties;
 
     /// @dev mapping to keep record of the investor has invested in certain property or not.
-    mapping(uint256 => mapping(address => bool)) public investmentRecords;
+    mapping(uint256 => mapping(address => bool)) investmentRecords;
 
     /// @dev mapping to keep record of the amount of investment done by the investor in a particular property.
-    mapping(uint256 => mapping(address => uint256))
-        public investmentAmountRecords;
+    mapping(uint256 => mapping(address => uint256)) investmentAmountRecords;
 
     /// @dev mapping to keep record of the time at which the investor has invested on a property
-    mapping(uint256 => mapping(address => uint256)) public investmentTimeRecord;
+    mapping(uint256 => mapping(address => uint256)) investmentTimeRecord;
 
     /// @dev mapping to keep record  of the investor's investment data
-    mapping(address => InvestorsData) public investorsDataMapping;
+    mapping(address => InvestorsData) investorsDataMapping;
 
     /// @dev mapping to keep record  of the investor's investment data
-    mapping(address => OwnersData) public ownersDataMapping;
+    mapping(address => OwnersData) ownersDataMapping;
 
     /// @dev mapping for keeping record of property token name
-    mapping(uint256 => string) public PropertyTokenName;
+    mapping(uint256 => string) PropertyTokenName;
 
     /// @dev mapping for keeping record of property token symbol
-    mapping(uint256 => string) public PropertyTokenSymbol;
+    mapping(uint256 => string) PropertyTokenSymbol;
 
     /// @dev time period at which the rent will be paid to the investor
     uint256 private timeFrame = 30 days;
-    uint256 public id = 0;
+    uint256 id = 0;
 
     /// @dev emits when the property is listed
     event ListPropertyInfo(
@@ -221,11 +220,11 @@ contract AssetTokenization {
         bool _investmentStatus
     );
 
-    UsdtMock public usdtMock;
+    UsdtMock usdtMock;
 
-    PropertyNFT public propertyNFT;
+    PropertyNFT propertyNFT;
 
-    PropertyToken public propertyToken;
+    PropertyToken propertyToken;
 
     constructor(address _usdtMock, address _propertyNFT) {
         usdtMock = UsdtMock(_usdtMock);
